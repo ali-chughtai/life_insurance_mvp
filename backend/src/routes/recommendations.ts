@@ -6,7 +6,9 @@ import { authenticateToken } from '../middleware/auth';
 
 const router = express.Router();
 
-router.post('/', [
+router.post('/',
+    authenticateToken, 
+    [
   body('age').isInt({ min: 18, max: 100 }).withMessage('Age must be between 18 and 100'),
   body('income').isFloat({ min: 0 }).withMessage('Income must be a positive number'),
   body('dependents').isInt({ min: 0 }).withMessage('Dependents must be a non-negative integer'),

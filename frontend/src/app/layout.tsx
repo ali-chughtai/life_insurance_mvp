@@ -11,7 +11,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <Navbar />
-        <main style={{ padding: 20, maxWidth: 600, margin: '0 auto' }}>
+        <main>
           {children}
         </main>
       </body>

@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-const BASE_URL = 'http://localhost:3001/api'
 
 export default function UserProfile() {
   const router = useRouter()
@@ -30,7 +29,7 @@ export default function UserProfile() {
   }, [router])
 
   async function loadProfile(token: string) {
-    const res = await fetch(`${BASE_URL}/user/profile`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/user/profile`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     const data = await res.json()
@@ -39,10 +38,10 @@ export default function UserProfile() {
       setError(data.error)
     } else if (data.profile) {
       setForm({
-        age: data.profile.age.toString(),
-        income: data.profile.income.toString(),
-        dependents: data.profile.dependents.toString(),
-        risk_tolerance: data.profile.risk_tolerance,
+        age: data.profile.age?.toString() || '',
+        income: data.profile.income?.toString() || '',
+        dependents: data.profile.dependents?.toString() || '',
+        risk_tolerance: data.profile.risk_tolerance || 'Low',
       })
     }
   }
@@ -60,7 +59,7 @@ export default function UserProfile() {
       risk_tolerance: form.risk_tolerance,
     }
 
-    const res = await fetch(`${BASE_URL}/user/profile`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/user/profile`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify(payload),
@@ -71,6 +70,9 @@ export default function UserProfile() {
       setError(data.error)
     } else {
       setSuccess('Profile updated successfully!')
+      setTimeout(() => {
+        router.push('/recommendations')
+      }, 1500)
     }
     setLoading(false)
   }
@@ -78,9 +80,9 @@ export default function UserProfile() {
   return (
     <form
       onSubmit={handleSubmit}
-      style={{ maxWidth: 400, margin: '40px auto', padding: 20, border: '1px solid #ddd', borderRadius: 6 }}
+      className="max-w-md mx-auto my-10 p-8 border border-gray-300 rounded-lg shadow-md bg-white"
     >
-      <h1 style={{ textAlign: 'center' }}>Your Profile</h1>
+      <h1 className="text-center text-3xl font-bold text-gray-800 mb-6">Your Profile</h1>
 
       <input
         type="number"
@@ -90,7 +92,7 @@ export default function UserProfile() {
         required
         value={form.age}
         onChange={e => setForm({ ...form, age: e.target.value })}
-        style={{ padding: 8, fontSize: 16, marginBottom: 12, width: '100%' }}
+        className="p-3 text-base mb-4 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <input
         type="number"
@@ -100,7 +102,7 @@ export default function UserProfile() {
         required
         value={form.income}
         onChange={e => setForm({ ...form, income: e.target.value })}
-        style={{ padding: 8, fontSize: 16, marginBottom: 12, width: '100%' }}
+        className="p-3 text-base mb-4 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <input
         type="number"
@@ -109,25 +111,25 @@ export default function UserProfile() {
         required
         value={form.dependents}
         onChange={e => setForm({ ...form, dependents: e.target.value })}
-        style={{ padding: 8, fontSize: 16, marginBottom: 12, width: '100%' }}
+        className="p-3 text-base mb-4 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <select
         value={form.risk_tolerance}
         onChange={e => setForm({ ...form, risk_tolerance: e.target.value })}
-        style={{ padding: 8, fontSize: 16, marginBottom: 12, width: '100%' }}
+        className="p-3 text-base mb-4 w-full border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
         <option value="Low">Low</option>
         <option value="Medium">Medium</option>
         <option value="High">High</option>
       </select>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {success && <p style={{ color: 'green' }}>{success}</p>}
+      {error && <p className="text-red-600 text-center mb-4">{error}</p>}
+      {success && <p className="text-green-600 text-center mb-4">{success}</p>}
 
       <button
         type="submit"
         disabled={loading}
-        style={{ padding: 10, width: '100%', backgroundColor: '#0070f3', color: 'white', borderRadius: 4 }}
+        className="p-3 w-full bg-blue-600 text-white rounded-md text-lg font-semibold hover:bg-blue-700 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
       >
         {loading ? 'Saving...' : 'Save Profile'}
       </button>
