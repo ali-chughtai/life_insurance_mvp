@@ -33,7 +33,8 @@ CREATE TABLE insurance_products (
     max_dependents INTEGER,
     description TEXT,
     features TEXT[], 
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_users_email ON users(email);
